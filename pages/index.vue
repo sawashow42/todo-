@@ -108,6 +108,7 @@ export default {
         return Y + "." + M + "." + D + " " + h + ":" + m;
       }
       this.todos.push({ isDone: false, date: dateStr, memo: this.newLine });
+      this.newLine = "";
     },
     delTodo: function (index) {
       this.todos.splice(index, 1);
