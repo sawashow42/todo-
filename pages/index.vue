@@ -43,16 +43,16 @@
           <p class="date d_head">作成日時</p>
           <p class="memo m_head">メモ</p>
         </div>
-        <ul class="row" v-for="(todo, index) in newTodos" :key="todo.date">
+        <li class="row" v-for="(todo, index) in newTodos" :key="todo.date">
           <input type="checkbox" class="cb" v-model="todo.isDone" />
-          <li class="date">{{ todo.date }}</li>
-          <li class="memo">{{ todo.memo }}</li>
-          <li>
+          <p class="date">{{ todo.date }}</p>
+          <p class="memo">{{ todo.memo }}</p>
+          <p>
             <button class="del_button" @click="delTodo(index)">
-              <img src="../static/trashbox.png" />
+              <img src="~/assets/trashbox.png" />
             </button>
-          </li>
-        </ul>
+          </p>
+        </li>
       </div>
     </section>
     <section class="add">
@@ -61,19 +61,20 @@
         <p>メモ</p>
         <input
           type="text"
-          value=""
           placeholder="内容を入力してください"
           class="text_box"
           v-model="newLine"
-          required
         />
-        <button class="add_button" @click="addTodo">追加</button>
+        <button class="add_button" @click="addTodo" :disabled="textJudge()">
+          追加
+        </button>
       </ul>
     </section>
   </div>
 </template>
 
 <script>
+import "normalize.css";
 export default {
   name: "IndexPage",
   data() {
@@ -93,8 +94,9 @@ export default {
     };
   },
   methods: {
-    addTodo: function () {
+    addTodo() {
       if (this.newLine == "") return;
+
       const dateStr = getDate();
       function getDate() {
         const date = new Date();
@@ -103,34 +105,37 @@ export default {
         const D = ("00" + date.getDate()).slice(-2);
         const h = ("00" + date.getHours()).slice(-2);
         const m = ("00" + date.getMinutes()).slice(-2);
-        const s = ("00" + date.getSeconds()).slice(-2);
 
         return Y + "." + M + "." + D + " " + h + ":" + m;
       }
       this.todos.push({ isDone: false, date: dateStr, memo: this.newLine });
       this.newLine = "";
     },
-    delTodo: function (index) {
+    delTodo(index) {
       this.todos.splice(index, 1);
+    },
+    textJudge() {
+      if (this.newLine === "") return true;
+      else return false;
     },
   },
   computed: {
-    todoStatus: function () {
-      var doneNum = 0;
-      var allNum = 0;
+    todoStatus() {
+      let doneNum = 0;
+      let allNum = 0;
       this.putNum = 0;
       this.newTodos = [];
-      var doneTodos = [];
-      var notDoneTodos = [];
+      let doneTodos = [];
+      let notDoneTodos = [];
 
-      for (const todo of this.todos) {
+      this.todos.forEach((todo) => {
         if (todo.isDone === true) {
           doneNum += 1;
           doneTodos.push(todo);
         } else {
           notDoneTodos.push(todo);
         }
-      }
+      });
       allNum = this.todos.length;
       if (this.radio === "all") {
         this.putNum = allNum;
@@ -142,7 +147,7 @@ export default {
         this.putNum = doneNum;
         this.newTodos = doneTodos;
       }
-      return this.newTodos, this.putNum;
+      return this.putNum;
     },
   },
 };
@@ -152,22 +157,22 @@ export default {
 .contents {
   width: 640px;
   height: auto;
-  margin: 96px auto 486px auto;
+  margin: 96px auto 486px;
   font-family: "Hiragino Sans";
 }
-.contents h2 {
+h2 {
   font-weight: 700;
   font-size: 24px;
   margin: 0;
 }
-.contents h1 {
+h1 {
   font-weight: 700;
   font-size: 36px;
 }
-.contents p {
+p {
   font-size: 14px;
 }
-.contents li {
+li {
   list-style: none;
 }
 .todo_list {
@@ -183,7 +188,6 @@ export default {
 }
 .todo_table {
   font-size: 14px;
-  font-weight: 300;
   font-weight: normal;
 }
 .todo_headline {
@@ -213,7 +217,7 @@ export default {
   width: 17.5px;
   height: 20px;
   border: none;
-  background-color: white;
+  background-color: #ffffff;
 }
 .add_area {
   width: 456px;
@@ -241,12 +245,57 @@ export default {
 .add_button {
   width: 64px;
   height: 27px;
-  color: white;
+  color: #ffffff;
   font-size: 14px;
   line-height: 100%;
   background-color: #00aaff;
   border-radius: 14px;
   border: solid;
+}
+
+@media screen and (max-width: 375px) {
+  .contents {
+    width: 100%;
+    margin: 36px 16px 0;
+  }
+  h1 {
+    font-size: 24px;
+  }
+  h2 {
+    font-size: 16px;
+  }
+  .date {
+    width: 96px;
+  }
+  .d_head {
+    margin-left: 0px;
+    width: 90px;
+  }
+  .memo {
+    width: 133px;
+    margin: 0 24px 0 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .add_area {
+    width: 375px;
+  }
+  .add {
+    width: 456px;
+    height: 92px;
+  }
+  .add ul {
+    flex-wrap: wrap;
+
+  }
+  .text_box {
+    width: 290px;
+    margin-right: 0;
+  }
+  .add_button {
+    margin-top: 16px;
+  }
 }
 </style>
 
