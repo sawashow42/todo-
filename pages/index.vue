@@ -43,21 +43,24 @@
           <p class="date d_head">作成日時</p>
           <p class="memo m_head">メモ</p>
         </div>
-        <li class="row" v-for="(todo, index) in newTodos" :key="todo.date">
-          <input type="checkbox" class="cb" v-model="todo.isDone" />
-          <p class="date">{{ todo.date }}</p>
-          <p class="memo">{{ todo.memo }}</p>
-          <p>
-            <button class="del_button" @click="delTodo(index)">
-              <img src="~/assets/trashbox.png" />
-            </button>
-          </p>
-        </li>
+        <ul>
+          <li class="row" v-for="(todo, index) in newTodos" :key="todo.index">
+            <input type="checkbox" class="cb" v-model="todo.isDone" />
+            <p class="date" v-if="windowWidth > 375" >{{ todo.date }}</p>
+            <p class="date" v-if="windowWidth <= 375" >{{ todo.date.substr(5) }}</p>
+            <p class="memo">{{ todo.memo }}</p>
+            <p>
+              <button class="del_button" @click="delTodo(index)">
+                <img src="~/assets/trashbox.png" />
+              </button>
+            </p>
+          </li>
+        </ul>
       </div>
     </section>
     <section class="add">
       <h2>新しい作業の追加</h2>
-      <ul class="add_area" submit.prevent>
+      <div class="add_area">
         <p>メモ</p>
         <input
           type="text"
@@ -68,7 +71,7 @@
         <button class="add_button" @click="addTodo" :disabled="textJudge()">
           追加
         </button>
-      </ul>
+      </div>
     </section>
   </div>
 </template>
@@ -76,7 +79,6 @@
 <script>
 import "normalize.css";
 export default {
-  name: "IndexPage",
   data() {
     return {
       radio: "all",
@@ -91,14 +93,20 @@ export default {
       newTodos: [],
       newLine: "",
       putNum: 0,
+      windowWidth: 0,
     };
   },
+  mounted() {
+    window.addEventListener("resize",this.getWindowSize)
+  },
   methods: {
+    getWindowSize() {
+      this.windowWidth = window.innerWidth;
+    },
     addTodo() {
       if (this.newLine == "") return;
 
-      const dateStr = getDate();
-      function getDate() {
+      const getDate =()=> {
         const date = new Date();
         const Y = date.getFullYear();
         const M = ("00" + (date.getMonth() + 1)).slice(-2);
@@ -106,9 +114,9 @@ export default {
         const h = ("00" + date.getHours()).slice(-2);
         const m = ("00" + date.getMinutes()).slice(-2);
 
-        return Y + "." + M + "." + D + " " + h + ":" + m;
+        return `${Y}.${M}.${D} ${h}:${m}`
       }
-      this.todos.push({ isDone: false, date: dateStr, memo: this.newLine });
+      this.todos.push({ isDone: false, date: getDate(), memo: this.newLine });
       this.newLine = "";
     },
     delTodo(index) {
@@ -121,22 +129,14 @@ export default {
   },
   computed: {
     todoStatus() {
-      let doneNum = 0;
-      let allNum = 0;
-      this.putNum = 0;
+      let allNum = this.todos.length;
       this.newTodos = [];
-      let doneTodos = [];
-      let notDoneTodos = [];
-
-      this.todos.forEach((todo) => {
-        if (todo.isDone === true) {
-          doneNum += 1;
-          doneTodos.push(todo);
-        } else {
-          notDoneTodos.push(todo);
-        }
-      });
-      allNum = this.todos.length;
+      const doneTodos = this.todos.filter(todo => todo.isDone === true);
+      let doneNum = doneTodos.length;
+      const notDoneTodos = this.todos.filter(todo => todo.isDone === false);
+      
+      
+      this.putNum = 0;
       if (this.radio === "all") {
         this.putNum = allNum;
         this.newTodos = this.todos;
@@ -190,6 +190,10 @@ li {
   font-size: 14px;
   font-weight: normal;
 }
+
+.todo_table ul {
+  display: block;
+}
 .todo_headline {
   display: flex;
   margin: 0;
@@ -222,17 +226,14 @@ li {
 .add_area {
   width: 456px;
   height: 32px;
-  margin: 0;
+  margin: 24px 0 0;
   align-items: center;
+  display: flex;
+  padding-left: 0;
 }
 .add {
   width: 456px;
   height: 92px;
-}
-.add ul {
-  display: flex;
-  padding-left: 0;
-  margin-top: 24px;
 }
 .add p {
   width: 30px;
@@ -280,14 +281,11 @@ li {
   }
   .add_area {
     width: 375px;
+    flex-wrap: wrap;
   }
   .add {
     width: 456px;
     height: 92px;
-  }
-  .add ul {
-    flex-wrap: wrap;
-
   }
   .text_box {
     width: 290px;
