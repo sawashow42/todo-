@@ -1,0 +1,35 @@
+{
+  "files.autoSave": "afterDelay",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "editor.bracketPairColorization.enabled": true,
+  "editor.formatOnSaveMode": "modifications",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "editor.codeActionsOnSave": [
+    "source.organizeImports",
+    "source.fixAll.eslint"
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.tabSize": 2,
+  // JavaScript
+  "javascript.suggest.completeFunctionCalls": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // HTML
+  "html.format.extraLiners": "",
+  "html.format.preserveNewLines": false,
+  "html.format.indentInnerHtml": true,
+  // Vue
+  "[vue]": {
+    "editor.defaultFormatter": "octref.vetur"
+  },
+  // Git
+  "git.autofetch": true,
+  "githubPullRequests.pullBranch": "prompt",
+  // Spell Checker
+  "cSpell.ignoreWords": [],
+  // TODO
+  "todohighlight.keywords": ["HACK", "WARNING"]
+}

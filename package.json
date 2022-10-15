@@ -15,5 +15,7 @@
     "vue-server-renderer": "^2.7.10",
     "vue-template-compiler": "^2.7.10"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "normalize.css": "^8.0.1"
+  }
 }
