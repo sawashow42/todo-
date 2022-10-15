@@ -93,7 +93,7 @@ export default {
       newTodos: [],
       newLine: "",
       putNum: 0,
-      windowWidth: 0,
+      windowWidth: 1440,
     };
   },
   mounted() {
